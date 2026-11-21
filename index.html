@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>TOWER OF REGRET — A Rage Climber</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="side-panel left-panel">
+      <div class="brand">
+        <span class="badge">RAGE GAME</span>
+        <h1>TOWER OF<br />REGRET</h1>
+        <p class="tagline">One mistake. All the way down.</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-label">HEIGHT</span>
+          <span class="stat-value" id="stat-height">0m</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">BEST</span>
+          <span class="stat-value accent" id="stat-best">0m</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">FALLS</span>
+          <span class="stat-value danger" id="stat-falls">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">TIME</span>
+          <span class="stat-value" id="stat-time">00:00</span>
+        </div>
+      </div>
+
+      <div class="zone-box">
+        <span class="stat-label">CURRENT ZONE</span>
+        <div class="zone-name" id="zone-name">The Mossy Dungeon</div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="progress-pct" id="progress-pct">0%</div>
+      </div>
+    </aside>
+
+    <main class="game-container">
+      <div class="canvas-wrapper">
+        <canvas id="gameCanvas" width="480" height="720"></canvas>
+
+        <!-- Snarky Narrator Toast -->
+        <div id="taunt-toast" class="taunt-toast hidden"></div>
+
+        <!-- Start / Victory Overlay -->
+        <div id="overlay" class="overlay">
+          <div class="overlay-card" id="overlay-card">
+            <h2 id="overlay-title">TOWER OF REGRET</h2>
+            <p id="overlay-subtitle">
+              Hold <strong>SPACE</strong> to charge your jump.<br />
+              Hold <strong>A / D</strong> or <strong>← / →</strong> to aim.<br />
+              Release to leap. Don't bonk.
+            </p>
+            <div class="overlay-stats hidden" id="overlay-stats"></div>
+            <button id="start-btn" class="btn-primary">CLIMB (SPACE)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Touch Controls -->
+      <div class="touch-controls" id="touch-controls">
+        <button class="touch-btn" id="btn-left" aria-label="Move Left">◀</button>
+        <button class="touch-btn touch-jump" id="btn-jump" aria-label="Charge Jump">HOLD JUMP</button>
+        <button class="touch-btn" id="btn-right" aria-label="Move Right">▶</button>
+      </div>
+    </main>
+
+    <aside class="side-panel right-panel">
+      <div class="controls-box">
+        <h3>CONTROLS</h3>
+        <ul>
+          <li><kbd>A</kbd> <kbd>D</kbd> or <kbd>←</kbd> <kbd>→</kbd> <span>Walk / Aim</span></li>
+          <li><kbd>SPACE</kbd> / <kbd>W</kbd> / <kbd>↑</kbd> <span>Hold &amp; Release Jump</span></li>
+          <li><kbd>M</kbd> <span>Toggle Sound</span></li>
+          <li><kbd>R</kbd> <span>Restart Run</span></li>
+        </ul>
+      </div>
+
+      <div class="options-box">
+        <h3>OPTIONS</h3>
+        <label class="toggle-row">
+          <input type="checkbox" id="toggle-hardcore" />
+          <span>Hide Power Bar (Hardcore)</span>
+        </label>
+        <label class="toggle-row">
+          <input type="checkbox" id="toggle-mute" />
+          <span>Mute Audio (M)</span>
+        </label>
+        <button id="reset-btn" class="btn-secondary">Restart Run (R)</button>
+      </div>
+
+      <div class="legend-box">
+        <h3>HAZARDS</h3>
+        <div class="legend-item"><span class="swatch solid"></span> Solid Ledge</div>
+        <div class="legend-item"><span class="swatch ice"></span> Slippery Ice</div>
+        <div class="legend-item"><span class="swatch crumble"></span> Crumbling Stone</div>
+        <div class="legend-item"><span class="swatch bounce"></span> Spring Pad</div>
+        <div class="legend-item"><span class="swatch moving"></span> Moving Platform</div>
+      </div>
+    </aside>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
