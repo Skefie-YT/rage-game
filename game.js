@@ -22,10 +22,20 @@
   const toggleHardcoreEl = document.getElementById('toggle-hardcore');
   const toggleMuteEl = document.getElementById('toggle-mute');
 
-  // Touch buttons
+  // Touch buttons & Mobile HUD
   const btnLeft = document.getElementById('btn-left');
   const btnRight = document.getElementById('btn-right');
   const btnJump = document.getElementById('btn-jump');
+  const jumpChargeFillEl = document.getElementById('jump-charge-fill');
+  const mHeightEl = document.getElementById('m-height');
+  const mBestEl = document.getElementById('m-best');
+  const mFallsEl = document.getElementById('m-falls');
+  const mPctEl = document.getElementById('m-pct');
+  const mMuteBtn = document.getElementById('m-mute');
+  const mResetBtn = document.getElementById('m-reset');
+  const mInfoBtn = document.getElementById('m-info');
+  const mCloseDrawerBtn = document.getElementById('m-close-drawer');
+  const rightPanelEl = document.getElementById('right-panel');
 
   // Constants
   const W = 480;
@@ -436,23 +446,33 @@
   window.addEventListener('keydown', handleKeyDown);
   window.addEventListener('keyup', handleKeyUp);
 
-  // Touch / Mouse Controls
+  // Touch / Mouse Controls (multi-touch safe via pointer capture)
   function bindHold(el, onDown, onUp) {
+    const activePointers = new Set();
     const start = (e) => {
       e.preventDefault();
       sfx.init();
-      el.classList.add('active');
-      onDown();
+      try { el.setPointerCapture(e.pointerId); } catch (_) {}
+      const wasEmpty = activePointers.size === 0;
+      activePointers.add(e.pointerId);
+      if (wasEmpty) {
+        el.classList.add('active');
+        onDown();
+      }
     };
     const end = (e) => {
       e.preventDefault();
-      el.classList.remove('active');
-      onUp();
+      if (!activePointers.has(e.pointerId)) return;
+      activePointers.delete(e.pointerId);
+      if (activePointers.size === 0) {
+        el.classList.remove('active');
+        onUp();
+      }
     };
     el.addEventListener('pointerdown', start);
     el.addEventListener('pointerup', end);
     el.addEventListener('pointercancel', end);
-    el.addEventListener('pointerleave', end);
+    el.addEventListener('contextmenu', (e) => e.preventDefault());
   }
 
   bindHold(btnLeft, () => { keys.left = true; player.facing = -1; }, () => { keys.left = false; });
@@ -473,6 +493,11 @@
     }
   );
 
+  function syncMuteUI() {
+    toggleMuteEl.checked = sfx.muted;
+    if (mMuteBtn) mMuteBtn.textContent = sfx.muted ? '🔇' : '🔊';
+  }
+
   startBtn.addEventListener('click', () => {
     sfx.init();
     resetGame(true);
@@ -480,8 +505,37 @@
 
   resetBtn.addEventListener('click', () => {
     sfx.init();
+    rightPanelEl.classList.remove('open');
     resetGame(true);
   });
+
+  if (mResetBtn) {
+    mResetBtn.addEventListener('click', () => {
+      sfx.init();
+      resetGame(true);
+    });
+  }
+
+  if (mMuteBtn) {
+    mMuteBtn.addEventListener('click', () => {
+      sfx.init();
+      sfx.muted = !sfx.muted;
+      if (sfx.muted) sfx.stopCharge();
+      syncMuteUI();
+    });
+  }
+
+  if (mInfoBtn) {
+    mInfoBtn.addEventListener('click', () => {
+      rightPanelEl.classList.toggle('open');
+    });
+  }
+
+  if (mCloseDrawerBtn) {
+    mCloseDrawerBtn.addEventListener('click', () => {
+      rightPanelEl.classList.remove('open');
+    });
+  }
 
   toggleHardcoreEl.addEventListener('change', (e) => {
     hardcoreMode = e.target.checked;
@@ -490,6 +544,7 @@
   toggleMuteEl.addEventListener('change', (e) => {
     sfx.muted = e.target.checked;
     if (sfx.muted) sfx.stopCharge();
+    syncMuteUI();
   });
 
   // Update Physics (fixed dt = 1/60)
@@ -840,6 +895,14 @@
     statTimeEl.textContent = formatTime(elapsedSeconds);
     progressFillEl.style.width = `${pct}%`;
     progressPctEl.textContent = `${pct}% (${meters} / ${totalMeters}m)`;
+
+    if (mHeightEl) mHeightEl.textContent = `${meters}m`;
+    if (mBestEl) mBestEl.textContent = `${bestHeightMeters}m`;
+    if (mFallsEl) mFallsEl.textContent = String(falls);
+    if (mPctEl) mPctEl.textContent = `${pct}%`;
+    if (jumpChargeFillEl) {
+      jumpChargeFillEl.style.width = (!hardcoreMode && player.charging) ? `${Math.round(player.charge * 100)}%` : '0%';
+    }
 
     if (player.y > 3350) zoneNameEl.textContent = '1. The Mossy Dungeon';
     else if (player.y > 2200) zoneNameEl.textContent = '2. The Windy Spire';

@@ -2,12 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>TOWER OF REGRET — A Rage Climber</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="app-shell">
+    <!-- Compact Mobile Top HUD -->
+    <header class="mobile-hud" id="mobile-hud">
+      <div class="mobile-stats">
+        <div class="m-stat"><span class="m-lbl">HT</span><strong id="m-height">0m</strong></div>
+        <div class="m-stat"><span class="m-lbl">BEST</span><strong class="accent" id="m-best">0m</strong></div>
+        <div class="m-stat"><span class="m-lbl">FALLS</span><strong class="danger" id="m-falls">0</strong></div>
+        <div class="m-stat"><span class="m-lbl">PROG</span><strong id="m-pct">0%</strong></div>
+      </div>
+      <div class="mobile-actions">
+        <button class="m-icon-btn" id="m-mute" aria-label="Toggle Sound" title="Mute">🔊</button>
+        <button class="m-icon-btn" id="m-reset" aria-label="Restart Run" title="Restart">↻</button>
+        <button class="m-icon-btn" id="m-info" aria-label="Options & Info" title="Options">⚙</button>
+      </div>
+    </header>
+
     <aside class="side-panel left-panel">
       <div class="brand">
         <span class="badge">RAGE GAME</span>
@@ -68,13 +83,22 @@
 
       <!-- Mobile Touch Controls -->
       <div class="touch-controls" id="touch-controls">
-        <button class="touch-btn" id="btn-left" aria-label="Move Left">◀</button>
-        <button class="touch-btn touch-jump" id="btn-jump" aria-label="Charge Jump">HOLD JUMP</button>
-        <button class="touch-btn" id="btn-right" aria-label="Move Right">▶</button>
+        <div class="touch-dpad">
+          <button class="touch-btn" id="btn-left" aria-label="Move Left">◀</button>
+          <button class="touch-btn" id="btn-right" aria-label="Move Right">▶</button>
+        </div>
+        <button class="touch-btn touch-jump" id="btn-jump" aria-label="Charge Jump">
+          <span class="jump-charge-fill" id="jump-charge-fill"></span>
+          <span class="jump-btn-label">HOLD JUMP</span>
+        </button>
       </div>
     </main>
 
-    <aside class="side-panel right-panel">
+    <aside class="side-panel right-panel" id="right-panel">
+      <div class="mobile-drawer-header">
+        <span>OPTIONS &amp; INFO</span>
+        <button class="m-close-btn" id="m-close-drawer" aria-label="Close">✕</button>
+      </div>
       <div class="controls-box">
         <h3>CONTROLS</h3>
         <ul>
